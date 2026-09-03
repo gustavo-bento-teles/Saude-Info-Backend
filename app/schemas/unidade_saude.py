@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-class UnidadeMedica_Create(BaseModel):
+class UnidadeSaude_Create(BaseModel):
     nome_login: str
     nome_exibicao: str
 
