@@ -43,7 +43,7 @@ class Especializacao(Base):
     __tablename__ = "especializacao"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    nome: Mapped[str] = mapped_column(String(70), nullable=False)
+    nome: Mapped[str] = mapped_column(String(70), unique=True, nullable=False)
 
 
 class Especializacao_Medico(Base):
