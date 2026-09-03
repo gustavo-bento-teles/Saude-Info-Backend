@@ -18,5 +18,5 @@ class Unidade_Saude(Base):
     horario_abertura: Mapped[str] = mapped_column(String(20), nullable=False)
     horario_fechamento: Mapped[str] = mapped_column(String(20), nullable=False)
 
-    pessoas_fila_atendimento: Mapped[int] = mapped_column(Integer, nullable=False)
-    pessoas_atendidas: Mapped[int] = mapped_column(Integer, nullable=False)
+    pessoas_fila_atendimento: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    pessoas_atendidas: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
