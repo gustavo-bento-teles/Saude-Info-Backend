@@ -36,7 +36,7 @@ class Unidade_Saude_Medico(Base):
     id_unidade_saude: Mapped[int] = mapped_column(
         ForeignKey("unidade_saude.id"), nullable=False
     )
-    status_medico_unidade_saude: Mapped[str] = mapped_column(String(30), nullable=False)
+    status_medico_unidade_saude: Mapped[bool] = mapped_column(Boolean, nullable=False)
 
 
 class Especializacao(Base):

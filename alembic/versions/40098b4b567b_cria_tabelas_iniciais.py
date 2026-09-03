@@ -1,8 +1,8 @@
-"""correcao para unique na especializacao
+"""cria tabelas iniciais
 
-Revision ID: d3a5474d89da
-Revises: 107ad0df068e
-Create Date: 2026-09-02 21:07:57.066858
+Revision ID: 40098b4b567b
+Revises: 
+Create Date: 2026-09-03 07:50:43.114720
 
 """
 from typing import Sequence, Union
@@ -12,8 +12,8 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = 'd3a5474d89da'
-down_revision: Union[str, Sequence[str], None] = '107ad0df068e'
+revision: str = '40098b4b567b'
+down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
@@ -72,7 +72,7 @@ def upgrade() -> None:
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('id_medico', sa.Integer(), nullable=False),
     sa.Column('id_unidade_saude', sa.Integer(), nullable=False),
-    sa.Column('status_medico_unidade_saude', sa.String(length=30), nullable=False),
+    sa.Column('status_medico_unidade_saude', sa.Boolean(), nullable=False),
     sa.ForeignKeyConstraint(['id_medico'], ['medico.id'], ),
     sa.ForeignKeyConstraint(['id_unidade_saude'], ['unidade_saude.id'], ),
     sa.PrimaryKeyConstraint('id')
