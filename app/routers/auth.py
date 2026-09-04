@@ -8,12 +8,12 @@ from app.services.unidade_saude_service import buscar_unidade_saude_nome_login_s
 
 from app.schemas.unidade_saude_schema import UnidadeSaude_Login
 
-login_router = APIRouter(
-    prefix="/login",
-    tags=["Login"]
+auth_router = APIRouter(
+    prefix="/auth",
+    tags=["auth"]
 )
 
-@login_router.post("/", status_code=status.HTTP_200_OK)
+@auth_router.post("/login", status_code=status.HTTP_200_OK)
 async def fazer_login(
     unidade_saude_login: UnidadeSaude_Login,
     db: Session = Depends(get_db)
