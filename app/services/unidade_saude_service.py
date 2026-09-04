@@ -12,7 +12,6 @@ def criar_unidade_saude(db:Session, unidade_saude_create: UnidadeSaude_Create):
     senha_hasheada: str = hashear_senha(senha)
 
     # Falta adicionar no banco de dados
-    # Falta fazer o cálculo para ver se está aberto com base nos horários de abertura e fechamento
 
     return {
         "unidade-saude": unidade_saude_create,

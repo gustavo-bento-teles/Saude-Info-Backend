@@ -14,7 +14,7 @@ class Unidade_Saude(Base):
 
     localizacao_exibicao: Mapped[str] = mapped_column(String(255), nullable=False)
     localizacao_link_mapa: Mapped[str] = mapped_column(String(255), nullable=True)
-    aberto: Mapped[bool] = mapped_column(Boolean, nullable=False)
+    aberto: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     horario_abertura: Mapped[str] = mapped_column(String(20), nullable=False)
     horario_fechamento: Mapped[str] = mapped_column(String(20), nullable=False)
 
