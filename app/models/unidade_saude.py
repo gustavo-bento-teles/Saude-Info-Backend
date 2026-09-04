@@ -8,7 +8,7 @@ class Unidade_Saude(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
 
-    nome_login: Mapped[str] = mapped_column(String(100), nullable=False)
+    nome_login: Mapped[str] = mapped_column(String(100), unique=True, nullable=False)
     nome_exibicao: Mapped[str] = mapped_column(String(100), nullable=False)
     senha: Mapped[str] = mapped_column(String(255), nullable=False)
 

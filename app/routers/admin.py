@@ -1,10 +1,14 @@
 from fastapi import APIRouter, status, Depends
 
-from app.schemas.unidade_saude import UnidadeSaude_Create
+from sqlalchemy.orm import Session
 
-from app.security.autenticacao_admin import verificar_credencial_admin
-from app.security.criador_senhas import criar_senha_aleatoria
-from app.security.hasher import hashear_senha
+from app.database.database import get_db
+
+from app.services.unidade_saude_service import criar_unidade_saude_service
+
+from app.schemas.unidade_saude_schema import UnidadeSaude_Create
+
+from app.auth.autenticacao_admin import verificar_credencial_admin
 
 admin_router = APIRouter(
     prefix="/admin",
@@ -13,7 +17,8 @@ admin_router = APIRouter(
 
 @admin_router.post("/create-unidade-saude", status_code=status.HTTP_201_CREATED)
 async def criar_unidade_saude(
-    unidade_medica: UnidadeSaude_Create, 
-    autorizado: bool = Depends(verificar_credencial_admin)
-):  
-    return unidade_medica
+    unidade_saude_create: UnidadeSaude_Create, 
+    autorizado: bool = Depends(verificar_credencial_admin),
+    db: Session = Depends(get_db)
+):
+    return criar_unidade_saude_service(db, unidade_saude_create)
