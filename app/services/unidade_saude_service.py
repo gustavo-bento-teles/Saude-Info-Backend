@@ -4,12 +4,13 @@ from fastapi import HTTPException, status
 
 from app.repositories.unidade_saude_repository import db_criar_unidade_saude, db_buscar_unidade_saude_nome_login
 
-from app.schemas.unidade_saude_schema import UnidadeSaude_Create, UnidadeSaude_Login, UnidadeSaude_Busca_Response
+from app.schemas.unidade_saude_schema import UnidadeSaude_Create, UnidadeSaude_Login
 
 from app.security.criador_strings import criar_string_aleatoria
 from app.security.hasher import hashear_string, verificar_hash
 
-def criar_unidade_saude_service(db:Session, unidade_saude_create: UnidadeSaude_Create):
+
+def service_criar_unidade_saude(db:Session, unidade_saude_create: UnidadeSaude_Create):
     senha: str = criar_string_aleatoria(24)
     senha_hasheada: str = hashear_string(senha)
 
@@ -26,10 +27,12 @@ def criar_unidade_saude_service(db:Session, unidade_saude_create: UnidadeSaude_C
         "senha-acesso": senha
     }
 
-def buscar_unidade_saude_nome_login_service(
+
+
+def service_buscar_unidade_saude_by_nome_login(
     db: Session,
     unidade_saude_login: UnidadeSaude_Login
-) -> UnidadeSaude_Busca_Response | None:
+) -> int | None:
     resultado_busca = db_buscar_unidade_saude_nome_login(db, unidade_saude_login)
 
     if resultado_busca is None:
@@ -44,14 +47,4 @@ def buscar_unidade_saude_nome_login_service(
             detail="Senha incorreta"
         )
 
-    return UnidadeSaude_Busca_Response(
-        nome_login=resultado_busca.nome_login,
-        nome_exibicao=resultado_busca.nome_exibicao,
-        localizacao_exibicao=resultado_busca.localizacao_exibicao,
-        localizacao_link_mapa=resultado_busca.localizacao_link_mapa,
-        aberto=resultado_busca.aberto,
-        horario_abertura=resultado_busca.horario_abertura,
-        horario_fechamento=resultado_busca.horario_fechamento,
-        pessoas_fila_atendimento=resultado_busca.pessoas_fila_atendimento,
-        pessoas_atendidas=resultado_busca.pessoas_atendidas
-    )
+    return resultado_busca.id

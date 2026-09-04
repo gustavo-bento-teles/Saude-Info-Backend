@@ -4,11 +4,11 @@ from sqlalchemy.orm import Session
 
 from app.database.database import get_db
 
-from app.services.unidade_saude_service import criar_unidade_saude_service
+from app.services.unidade_saude_service import service_criar_unidade_saude
 
 from app.schemas.unidade_saude_schema import UnidadeSaude_Create
 
-from app.auth.autenticacao_admin import verificar_credencial_admin
+from app.services.auth_service import verificar_credencial_admin
 
 admin_router = APIRouter(
     prefix="/admin",
@@ -21,4 +21,4 @@ async def criar_unidade_saude(
     autorizado: bool = Depends(verificar_credencial_admin),
     db: Session = Depends(get_db)
 ):
-    return criar_unidade_saude_service(db, unidade_saude_create)
+    return service_criar_unidade_saude(db, unidade_saude_create)

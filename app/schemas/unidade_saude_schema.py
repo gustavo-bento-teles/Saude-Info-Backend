@@ -1,17 +1,8 @@
 from pydantic import BaseModel
 
-class UnidadeSaude_Busca_Response(BaseModel):
-    nome_login: str
-    nome_exibicao: str
-    
-    localizacao_exibicao: str
-    localizacao_link_mapa: str
-    aberto: bool
-    horario_abertura: str
-    horario_fechamento: str
-    
-    pessoas_fila_atendimento: int
-    pessoas_atendidas: int
+# ================
+# Entrada de dados
+# ================
 
 class UnidadeSaude_Create(BaseModel):
     nome_login: str
