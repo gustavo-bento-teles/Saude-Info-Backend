@@ -2,15 +2,13 @@ from pwdlib import PasswordHash
 
 password_hasher = PasswordHash.recommended()
 
+
 def hashear_string(string: str) -> str:
     return password_hasher.hash(string)
 
 
-def verficicar_hash(string: str, string_hasheada: str):
+def verificar_hash(string: str, string_hasheada: str) -> bool:
     try:
-        if password_hasher.verify(string, string_hasheada):
-            return True
+        return password_hasher.verify(string, string_hasheada)
+    except Exception:
         return False
-
-    except Exception as e:
-        pass

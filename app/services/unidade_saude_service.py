@@ -1,11 +1,13 @@
 from sqlalchemy.orm import Session
 
+from fastapi import HTTPException, status
+
 from app.repositories.unidade_saude_repository import db_criar_unidade_saude, db_buscar_unidade_saude_nome_login
 
 from app.schemas.unidade_saude_schema import UnidadeSaude_Create, UnidadeSaude_Login, UnidadeSaude_Busca_Response
 
 from app.security.criador_strings import criar_string_aleatoria
-from app.security.hasher import hashear_string
+from app.security.hasher import hashear_string, verificar_hash
 
 def criar_unidade_saude_service(db:Session, unidade_saude_create: UnidadeSaude_Create):
     senha: str = criar_string_aleatoria(24)
@@ -13,14 +15,15 @@ def criar_unidade_saude_service(db:Session, unidade_saude_create: UnidadeSaude_C
 
     unidade_saude_criada = db_criar_unidade_saude(db, unidade_saude_create, senha_hasheada)    
 
-    if unidade_saude_criada != None:
-        return {
-            "unidade-saude": unidade_saude_create,
-            "senha-acesso": senha
-        }
+    if unidade_saude_criada is None:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Usuário já existente"
+        )
 
     return {
-        "detail": "Usuário já existente"
+        "unidade-saude": unidade_saude_create,
+        "senha-acesso": senha
     }
 
 def buscar_unidade_saude_nome_login_service(
@@ -30,11 +33,16 @@ def buscar_unidade_saude_nome_login_service(
     resultado_busca = db_buscar_unidade_saude_nome_login(db, unidade_saude_login)
 
     if resultado_busca is None:
-        return {
-            "detail": "Unidade de saúde não encontrada"
-        }
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Unidade de saúde não encontrada"
+        )
 
-    # Falta colocar validação do hash da senha para retornar os dados
+    if not verificar_hash(unidade_saude_login.senha, resultado_busca.senha):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Senha incorreta"
+        )
 
     return UnidadeSaude_Busca_Response(
         nome_login=resultado_busca.nome_login,
