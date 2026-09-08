@@ -7,7 +7,7 @@ from app.models.falta_medicamento_unidade_saude import Falta_Medicamento_Unidade
 from app.models.medicamento import Medicamento
 from app.models.unidade_saude_medico import Unidade_Saude_Medico
 
-
+from app.schemas.medico_schema import Medico_Response
 from app.schemas.unidade_saude_schema import UnidadeSaude_Create, UnidadeSaude_Login, UnidadeSaude_Response, UnidadeSaude_Detailed_Response
 
 def db_criar_unidade_saude(
@@ -112,8 +112,13 @@ def db_buscar_unidade_saude_by_id(db: Session, unidade_saude_id: int) -> Unidade
     if unidade is None:
         return None
     
-    medicos = db.execute(
-        select(Medico)
+    medicos_resultado = db.execute(
+        select(
+            Medico.id,
+            Medico.nome,
+            Medico.especializacao,
+            Unidade_Saude_Medico.status_medico_unidade_saude
+        )
         .join(
             Unidade_Saude_Medico,
             Medico.id == Unidade_Saude_Medico.id_medico
@@ -121,7 +126,17 @@ def db_buscar_unidade_saude_by_id(db: Session, unidade_saude_id: int) -> Unidade
         .where(
             Unidade_Saude_Medico.id_unidade_saude == unidade_saude_id
         )
-    ).scalars().all()
+    ).all()
+
+    medicos = [
+        Medico_Response(
+            id=medico.id,
+            nome=medico.nome,
+            especializacao=medico.especializacao,
+            atendendo=medico.status_medico_unidade_saude
+        )
+        for medico in medicos_resultado
+    ]
     
     medicamentos = db.execute(
         select(Medicamento)

@@ -11,7 +11,7 @@ from app.schemas.unidade_saude_schema import UnidadeSaude_Create
 from app.services.auth_service import verificar_credencial_admin
 
 unidade_saude_router = APIRouter(
-    prefix="/unidade_saude",
+    prefix="/unidade-saude",
     tags=["Unidade de Saúde"]
 )
 

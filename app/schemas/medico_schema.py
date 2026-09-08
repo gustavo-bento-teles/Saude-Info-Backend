@@ -6,3 +6,4 @@ class Medico_Response(BaseModel):
     id: int
     nome: str
     especializacao: str
+    atendendo: bool
