@@ -2,9 +2,9 @@ from sqlalchemy.orm import Session
 
 from fastapi import HTTPException, status
 
-from app.repositories.unidade_saude_repository import db_criar_unidade_saude, db_buscar_unidade_saude_nome_login
+from app.repositories.unidade_saude_repository import db_criar_unidade_saude, db_buscar_unidade_saude_nome_login, db_listar_unidades_saude, db_buscar_unidade_saude_by_id
 
-from app.schemas.unidade_saude_schema import UnidadeSaude_Create, UnidadeSaude_Login
+from app.schemas.unidade_saude_schema import UnidadeSaude_Create, UnidadeSaude_Login, UnidadeSaude_Response, UnidadeSaude_Detailed_Response
 
 from app.security.criador_strings import criar_string_aleatoria
 from app.security.hasher import hashear_string, verificar_hash
@@ -48,3 +48,26 @@ def service_buscar_unidade_saude_by_nome_login(
         )
 
     return resultado_busca.id
+
+
+def service_listar_unidades_saude(db: Session) -> list[UnidadeSaude_Response]:
+    unidades_saude = db_listar_unidades_saude(db)
+    
+    if len(unidades_saude) == 0:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Nenhuma unidade de saúde ainda"
+        )
+        
+    return unidades_saude
+
+def service_buscar_unidade_saude_by_id(db: Session, unidade_saude_id: int) -> UnidadeSaude_Detailed_Response | None:
+    unidade_saude = db_buscar_unidade_saude_by_id(db, unidade_saude_id)
+    
+    if unidade_saude is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Unidade de saúde não encontrada"
+        )
+    
+    return unidade_saude

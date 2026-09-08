@@ -8,3 +8,4 @@ class Medico(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     nome: Mapped[str] = mapped_column(String(100), nullable=False)
+    especializacao: Mapped[str] = mapped_column(String(70), nullable=False)

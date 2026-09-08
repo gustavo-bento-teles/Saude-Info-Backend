@@ -10,8 +10,6 @@ from app.database.database import Base
 from app.models.unidade_saude import Unidade_Saude
 from app.models.medico import Medico
 from app.models.unidade_saude_medico import Unidade_Saude_Medico
-from app.models.especializacao import Especializacao
-from app.models.especializacao_medico import Especializacao_Medico
 from app.models.medicamento import Medicamento
 from app.models.falta_medicamento_unidade_saude import Falta_Medicamento_Unidade_Saude
 
