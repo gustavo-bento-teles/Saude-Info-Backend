@@ -11,11 +11,11 @@ from app.schemas.unidade_saude_schema import UnidadeSaude_Create
 from app.services.auth_service import verificar_credencial_admin
 
 admin_router = APIRouter(
-    prefix="/admin",
-    tags=["Admin"]
+    prefix="/unidade_saude",
+    tags=["Unidade de Saúde"]
 )
 
-@admin_router.post("/create-unidade-saude", status_code=status.HTTP_201_CREATED)
+@admin_router.post("/", status_code=status.HTTP_201_CREATED)
 async def criar_unidade_saude(
     unidade_saude_create: UnidadeSaude_Create, 
     autorizado: bool = Depends(verificar_credencial_admin),
