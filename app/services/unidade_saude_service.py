@@ -38,13 +38,13 @@ def service_buscar_unidade_saude_by_nome_login(
     if resultado_busca is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="Unidade de saúde não encontrada"
+            detail="Nome de login e/ou senha incorreto(s)"
         )
 
     if not verificar_hash(unidade_saude_login.senha, resultado_busca.senha):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Senha incorreta"
+            detail="Nome de login e/ou senha incorreto(s)"
         )
 
     return resultado_busca.id

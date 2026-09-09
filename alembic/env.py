@@ -12,6 +12,7 @@ from app.models.medico import Medico
 from app.models.unidade_saude_medico import Unidade_Saude_Medico
 from app.models.medicamento import Medicamento
 from app.models.falta_medicamento_unidade_saude import Falta_Medicamento_Unidade_Saude
+from app.models.session import Session
 
 import os
 from dotenv import load_dotenv
