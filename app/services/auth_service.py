@@ -2,7 +2,7 @@ from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from fastapi import Depends, HTTPException, status, Response, Cookie
 
 from sqlalchemy.orm import Session
-from app.schemas.unidade_saude_schema import UnidadeSaude_Login, UnidadeSaude_Detailed_Response
+from app.schemas.unidade_saude_schema import UnidadeSaude_Login
 from app.services.unidade_saude_service import service_buscar_unidade_saude_by_nome_login
 from app.repositories.session_repository import db_criar_sessao_banco, db_buscar_sessao_banco, db_deletar_sessao_banco
 from app.repositories.unidade_saude_repository import db_buscar_unidade_saude_by_id
@@ -66,7 +66,7 @@ def service_delete_current_unidade_saude(db: Session, response: Response, csrf_t
     }
 
 
-def service_get_current_unidade_saude(db: Session, csrf_token: str, session_token: str | None = Depends(obter_session_cookie)) -> UnidadeSaude_Detailed_Response | None:
+def service_get_current_unidade_saude(db: Session, csrf_token: str, session_token: str | None = Depends(obter_session_cookie)) -> int | None:
     if session_token is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -104,7 +104,7 @@ def service_get_current_unidade_saude(db: Session, csrf_token: str, session_toke
             detail="Unidade de saúde não encontrada"
         )
     
-    return unidade_saude
+    return unidade_saude.id
     
 
 def service_fazer_login(db: Session, unidade_saude_login: UnidadeSaude_Login, response: Response):
@@ -130,3 +130,6 @@ def service_fazer_login(db: Session, unidade_saude_login: UnidadeSaude_Login, re
         "message": "Login realizado com sucesso",
         "csrf_token": csrf_token
     }
+    
+def service_buscar_id_by_auth_tokens():
+    pass
