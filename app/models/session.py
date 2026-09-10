@@ -9,6 +9,7 @@ class Session(Base):
     __tablename__ = "session"
     
     token_hash: Mapped[str] = mapped_column(String(64), primary_key=True)
+    csrf_token: Mapped[str] = mapped_column(String(64), nullable=False)
     
     unidade_saude_id: Mapped[int] = mapped_column(
         ForeignKey("unidade_saude.id"), nullable=False

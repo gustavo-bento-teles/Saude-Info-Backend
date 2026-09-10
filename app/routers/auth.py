@@ -24,7 +24,8 @@ async def fazer_login(
 @auth_router.post("/logout", status_code=status.HTTP_200_OK)
 async def fazer_logout(
     response: Response,
+    csrf_token: str,
     db: Session = Depends(get_db),
     session_cookie = Depends(obter_session_cookie)
 ):
-    return service_delete_current_unidade_saude(db, response, session_cookie)
+    return service_delete_current_unidade_saude(db, response, csrf_token, session_cookie)
