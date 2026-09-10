@@ -6,7 +6,7 @@ from app.database.database import get_db
 
 from app.schemas.unidade_saude_schema import UnidadeSaude_Login
 
-from app.services.auth_service import service_fazer_login, service_delete_current_unidade_saude, obter_session_cookie
+from app.services.auth_service import service_fazer_login, service_delete_current_unidade_saude, obter_session_cookie, obter_csrf_token
 
 auth_router = APIRouter(
     prefix="/auth",
@@ -24,7 +24,7 @@ async def fazer_login(
 @auth_router.post("/logout", status_code=status.HTTP_200_OK)
 async def fazer_logout(
     response: Response,
-    csrf_token: str,
+    csrf_token: str | None = Depends(obter_csrf_token),
     db: Session = Depends(get_db),
     session_cookie = Depends(obter_session_cookie)
 ):

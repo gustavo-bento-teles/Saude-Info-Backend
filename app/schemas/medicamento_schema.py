@@ -1,5 +1,10 @@
 from pydantic import BaseModel, ConfigDict
 
+class Medicamento_Create(BaseModel):
+    nome: str
+    dosagem: str
+    forma: str
+
 class Medicamento_Response(BaseModel):
     model_config = ConfigDict(from_attributes=True)
     

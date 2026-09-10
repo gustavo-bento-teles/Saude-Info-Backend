@@ -1,5 +1,5 @@
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from fastapi import Depends, HTTPException, status, Response, Cookie
+from fastapi import Depends, HTTPException, status, Response, Cookie, Header
 
 from sqlalchemy.orm import Session
 from app.schemas.unidade_saude_schema import UnidadeSaude_Login
@@ -16,6 +16,9 @@ from app.core import ADMIN_PASSWORD, SESSION_DURATION
 
 security = HTTPBearer()
 
+
+def obter_csrf_token(csrf_token: str | None = Header(..., alias="X-CSRF-Token")):
+    return csrf_token
 
 def obter_session_cookie(session_token: str | None = Cookie(default=None, alias="session")):
     return session_token
@@ -34,7 +37,12 @@ def verificar_credencial_admin(
     return True
 
 
-def service_delete_current_unidade_saude(db: Session, response: Response, csrf_token: str, session_token: str | None = Depends(obter_session_cookie)):
+def service_delete_current_unidade_saude(
+    db: Session,
+    response: Response,
+    csrf_token: str | None = Depends(obter_csrf_token),
+    session_token: str | None = Depends(obter_session_cookie)
+):
     if session_token is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -66,7 +74,12 @@ def service_delete_current_unidade_saude(db: Session, response: Response, csrf_t
     }
 
 
-def service_get_current_unidade_saude(db: Session, csrf_token: str, session_token: str | None = Depends(obter_session_cookie)) -> int | None:
+def service_get_current_unidade_saude(
+    db: Session,
+    csrf_token: str | None = Depends(obter_csrf_token),
+    session_token: str | None = Depends(obter_session_cookie)
+) -> int | None:
+    
     if session_token is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -130,6 +143,3 @@ def service_fazer_login(db: Session, unidade_saude_login: UnidadeSaude_Login, re
         "message": "Login realizado com sucesso",
         "csrf_token": csrf_token
     }
-    
-def service_buscar_id_by_auth_tokens():
-    pass

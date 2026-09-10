@@ -1,13 +1,13 @@
 from sqlalchemy.orm import Session
 from fastapi import Depends, HTTPException, status
 
-from app.schemas.medico_schema import Medico_Create
-from app.repositories.medico_repository import db_criar_medico_banco
+from app.schemas.medicamento_schema import Medicamento_Create
+from app.repositories.medicamento_repository import db_criar_medicamento_banco
 from app.services.auth_service import service_get_current_unidade_saude, obter_session_cookie, obter_csrf_token
 
-def service_criar_medico(
+def service_criar_medicamento(
     db: Session,
-    medico_create: Medico_Create,
+    medicamento_create: Medicamento_Create,
     csrf_token: str | None = Depends(obter_csrf_token),
     session_token: str | None = Depends(obter_session_cookie)
 ):
@@ -18,10 +18,10 @@ def service_criar_medico(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Não autenticado"
         )
-    
-    medico = db_criar_medico_banco(db, medico_create)
+        
+    medicamento = db_criar_medicamento_banco(db, medicamento_create)
     
     return {
-        "message": "Médico criado com sucesso",
-        "medico": medico
+        "message": "Medicamento criado com sucesso",
+        "medicamento": medicamento
     }
