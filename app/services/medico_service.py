@@ -25,6 +25,5 @@ def service_criar_medico(
     db_criar_relacao_unidade_saude_medico(db, medico.id, unidade_saude_id, False)
     
     return {
-        "message": "Médico criado com sucesso",
-        "medico": medico
+        "message": "Médico criado com sucesso"
     }

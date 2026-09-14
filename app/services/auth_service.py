@@ -69,8 +69,8 @@ def service_delete_current_unidade_saude(
     
     db_deletar_sessao_banco(db, token_hash, csrf_token_hashed)
     
-    response.delete_cookie("session")
-    response.delete_cookie("csrf_token")
+    response.delete_cookie("session", path="/")
+    response.delete_cookie("csrf_token", path="/")
         
     return {
         "message": "Logout realizado com sucesso"
@@ -82,7 +82,7 @@ def service_get_current_unidade_saude(
     response: Response,
     csrf_token: str | None,
     session_token: str | None
-) -> int | None:
+) -> int | None | dict[str]:
     
     if session_token is None:
         raise HTTPException(
@@ -109,12 +109,13 @@ def service_get_current_unidade_saude(
         
     if sessao.expira_em < datetime.now(timezone.utc).replace(tzinfo=None):
         db_deletar_sessao_banco(db, token_hash, csrf_token_hashed)
-        response.delete_cookie("session")
-        response.delete_cookie("csrf_token")
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Sessão expirada"
-        )
+        response.delete_cookie("session", path="/")
+        response.delete_cookie("csrf_token", path="/")
+        
+        response.status_code = status.HTTP_401_UNAUTHORIZED
+        return {
+            "detail": "Sessão expirada"
+        }
         
     unidade_saude = db_buscar_unidade_saude_by_id(db, sessao.unidade_saude_id)
     
@@ -149,15 +150,15 @@ def service_fazer_login(
         httponly=True,
         secure=False,
         samesite="lax",
-        max_age=SESSION_DURATION
+        path="/"
     )
     
     response.set_cookie(
         key="csrf_token",
         value=csrf_token,
         httponly=False,
-        samesite="lax",
-        max_age=SESSION_DURATION    
+        samesite="lax" ,
+        path="/"
     )
     
     return {

@@ -1,4 +1,4 @@
-from fastapi import APIRouter, status, Depends
+from fastapi import APIRouter, status, Depends, Response
 
 from sqlalchemy.orm import Session
 
@@ -18,8 +18,9 @@ medicamento_router = APIRouter(
 @medicamento_router.post("/", status_code=status.HTTP_200_OK)
 async def criar_medicamento(
     medicamento_create: Medicamento_Create,
+    response: Response,
     csrf_token: str | None = Depends(obter_csrf_token),
     session_cookie = Depends(obter_session_cookie),
     db: Session = Depends(get_db)
 ):
-    return service_criar_medicamento(db, medicamento_create, csrf_token, session_cookie)
+    return service_criar_medicamento(db, response, medicamento_create, csrf_token, session_cookie)
