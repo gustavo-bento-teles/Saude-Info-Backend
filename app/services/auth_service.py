@@ -40,9 +40,10 @@ def verificar_credencial_admin(
 def service_delete_current_unidade_saude(
     db: Session,
     response: Response,
-    csrf_token: str | None = Depends(obter_csrf_token),
-    session_token: str | None = Depends(obter_session_cookie)
+    csrf_token: str | None,
+    session_token: str | None
 ):
+    
     if session_token is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -56,8 +57,9 @@ def service_delete_current_unidade_saude(
         )
             
     token_hash = hashear_sha256(session_token)
+    csrf_token_hashed = hashear_sha256(csrf_token)
     
-    sessao = db_buscar_sessao_banco(db, token_hash, csrf_token)
+    sessao = db_buscar_sessao_banco(db, token_hash, csrf_token_hashed)
     
     if sessao is None:
         raise HTTPException(
@@ -65,9 +67,10 @@ def service_delete_current_unidade_saude(
             detail="Sessão inválida"
         )
     
-    db_deletar_sessao_banco(db, token_hash, csrf_token)
+    db_deletar_sessao_banco(db, token_hash, csrf_token_hashed)
     
     response.delete_cookie("session")
+    response.delete_cookie("csrf_token")
         
     return {
         "message": "Logout realizado com sucesso"
@@ -76,8 +79,9 @@ def service_delete_current_unidade_saude(
 
 def service_get_current_unidade_saude(
     db: Session,
-    csrf_token: str | None = Depends(obter_csrf_token),
-    session_token: str | None = Depends(obter_session_cookie)
+    response: Response,
+    csrf_token: str | None,
+    session_token: str | None
 ) -> int | None:
     
     if session_token is None:
@@ -93,8 +97,9 @@ def service_get_current_unidade_saude(
         )
         
     token_hash = hashear_sha256(session_token)
+    csrf_token_hashed = hashear_sha256(csrf_token)
     
-    sessao = db_buscar_sessao_banco(db, token_hash, csrf_token)
+    sessao = db_buscar_sessao_banco(db, token_hash, csrf_token_hashed)
     
     if sessao is None:
         raise HTTPException(
@@ -103,7 +108,9 @@ def service_get_current_unidade_saude(
         )
         
     if sessao.expira_em < datetime.now(timezone.utc).replace(tzinfo=None):
-        db_deletar_sessao_banco(db, token_hash, csrf_token)
+        db_deletar_sessao_banco(db, token_hash, csrf_token_hashed)
+        response.delete_cookie("session")
+        response.delete_cookie("csrf_token")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Sessão expirada"
@@ -120,15 +127,21 @@ def service_get_current_unidade_saude(
     return unidade_saude.id
     
 
-def service_fazer_login(db: Session, unidade_saude_login: UnidadeSaude_Login, response: Response):
+def service_fazer_login(
+    db: Session,
+    unidade_saude_login: UnidadeSaude_Login,
+    response: Response
+):
+    
     unidade_saude_id = service_buscar_unidade_saude_by_nome_login(db, unidade_saude_login)
     
     session_token = criar_token_aleatorio(32)
     session_token_hashed = hashear_sha256(session_token)
     
     csrf_token = criar_token_aleatorio(32)
+    csrf_token_hashed = hashear_sha256(csrf_token)
     
-    db_criar_sessao_banco(db, csrf_token, session_token_hashed, unidade_saude_id)
+    db_criar_sessao_banco(db, csrf_token_hashed, session_token_hashed, unidade_saude_id)
     
     response.set_cookie(
         key="session",
@@ -139,7 +152,14 @@ def service_fazer_login(db: Session, unidade_saude_login: UnidadeSaude_Login, re
         max_age=SESSION_DURATION
     )
     
+    response.set_cookie(
+        key="csrf_token",
+        value=csrf_token,
+        httponly=False,
+        samesite="lax",
+        max_age=SESSION_DURATION    
+    )
+    
     return {
-        "message": "Login realizado com sucesso",
-        "csrf_token": csrf_token
+        "message": "Login realizado com sucesso"
     }

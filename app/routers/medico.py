@@ -1,4 +1,4 @@
-from fastapi import APIRouter, status, Depends
+from fastapi import APIRouter, status, Depends, Response
 
 from sqlalchemy.orm import Session
 
@@ -16,9 +16,10 @@ medico_router = APIRouter(
 
 @medico_router.post("/", status_code=status.HTTP_200_OK)
 async def criar_medico(
+    response: Response,
     medico_create: Medico_Create,
     csrf_token: str | None = Depends(obter_csrf_token),
     session_cookie = Depends(obter_session_cookie),
     db: Session = Depends(get_db)
 ):
-    return service_criar_medico(db, medico_create, csrf_token, session_cookie)
+    return service_criar_medico(db, response, medico_create, csrf_token, session_cookie)
