@@ -1,12 +1,16 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.exceptions.sessao_invalida_exceptions import SessaoInvalidaException, sessao_invalida_handler
+
 from app.routers.unidade_saude import unidade_saude_router
 from app.routers.auth import auth_router
 from app.routers.medico import medico_router
 from app.routers.medicamento import medicamento_router
 
 app = FastAPI()
+
+app.add_exception_handler(SessaoInvalidaException, sessao_invalida_handler)
 
 app.add_middleware(
     CORSMiddleware,

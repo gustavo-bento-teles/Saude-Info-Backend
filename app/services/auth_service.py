@@ -10,6 +10,8 @@ from app.repositories.unidade_saude_repository import db_buscar_unidade_saude_by
 from app.security.criador_strings import criar_token_aleatorio
 from app.security.hasher_sha256 import hashear_sha256
 
+from app.main import SessaoInvalidaException
+
 from datetime import datetime, timezone
 
 from app.core import ADMIN_PASSWORD, SESSION_DURATION
@@ -82,7 +84,7 @@ def service_get_current_unidade_saude(
     response: Response,
     csrf_token: str | None,
     session_token: str | None
-) -> int | None | dict[str]:
+) -> int:
     
     if session_token is None:
         raise HTTPException(
@@ -109,13 +111,7 @@ def service_get_current_unidade_saude(
         
     if sessao.expira_em < datetime.now(timezone.utc).replace(tzinfo=None):
         db_deletar_sessao_banco(db, token_hash, csrf_token_hashed)
-        response.delete_cookie("session", path="/")
-        response.delete_cookie("csrf_token", path="/")
-        
-        response.status_code = status.HTTP_401_UNAUTHORIZED
-        return {
-            "detail": "Sessão expirada"
-        }
+        raise SessaoInvalidaException()
         
     unidade_saude = db_buscar_unidade_saude_by_id(db, sessao.unidade_saude_id)
     
