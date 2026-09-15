@@ -1,14 +1,13 @@
 from sqlalchemy.orm import Session
 
-from fastapi import HTTPException, status
+from fastapi import HTTPException, status, Response
 
-from app.repositories.unidade_saude_repository import db_criar_unidade_saude, db_buscar_unidade_saude_nome_login, db_listar_unidades_saude, db_buscar_unidade_saude_by_id
+from app.repositories.unidade_saude_repository import db_criar_unidade_saude, db_buscar_unidade_saude_nome_login, db_listar_unidades_saude, db_buscar_unidade_saude_by_id, db_atualizar_dados_unidade_saude_by_id
 
-from app.schemas.unidade_saude_schema import UnidadeSaude_Create, UnidadeSaude_Login, UnidadeSaude_Response, UnidadeSaude_Detailed_Response
+from app.schemas.unidade_saude_schema import UnidadeSaude_Create, UnidadeSaude_Login, UnidadeSaude_Response, UnidadeSaude_Detailed_Response, UnidadeSaude_Update
 
 from app.security.criador_strings import criar_string_aleatoria
 from app.security.hasher import hashear_string, verificar_hash
-
 
 def service_criar_unidade_saude(db:Session, unidade_saude_create: UnidadeSaude_Create):
     senha: str = criar_string_aleatoria(24)
@@ -71,3 +70,21 @@ def service_buscar_unidade_saude_by_id(db: Session, unidade_saude_id: int) -> Un
         )
     
     return unidade_saude
+
+
+def service_atualizar_dados_unidade_saude(
+    db: Session,
+    unidade_saude_id: int,
+    unidade_saude_update: UnidadeSaude_Update
+):
+    unidade_dados = unidade_saude_update.model_dump(exclude_unset=True)
+    
+    if not db_atualizar_dados_unidade_saude_by_id(db, unidade_saude_id, unidade_dados):
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Usuário não encontrado"
+        )
+    
+    return {
+        "detail": "Atualizado com sucesso"
+    }

@@ -162,3 +162,20 @@ def db_buscar_unidade_saude_by_id(db: Session, unidade_saude_id: int) -> Unidade
         medicos=medicos,
         medicamentos=medicamentos
     )
+    
+def db_atualizar_dados_unidade_saude_by_id(db: Session, unidade_saude_id: int, dados_recebidos: dict) -> bool:
+    unidade_saude = db.execute(
+        select(Unidade_Saude)
+            .where(Unidade_Saude.id == unidade_saude_id)
+    ).scalar_one_or_none()
+    
+    if unidade_saude is None:
+        return False
+    
+    for campo, valor in dados_recebidos.items():
+        setattr(unidade_saude, campo, valor)
+        
+    db.commit()
+    db.refresh(unidade_saude)
+    
+    return True

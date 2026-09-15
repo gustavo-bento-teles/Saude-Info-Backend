@@ -48,3 +48,9 @@ class UnidadeSaude_Detailed_Response(BaseModel):
     
     medicos: list[Medico_Response]
     medicamentos: list[Medicamento_Response]
+    
+
+class UnidadeSaude_Update(BaseModel):
+    aberto: bool | None
+    pessoas_fila_atendimento: int | None
+    pessoas_atendidas: int | None

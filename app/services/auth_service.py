@@ -81,7 +81,6 @@ def service_delete_current_unidade_saude(
 
 def service_get_current_unidade_saude(
     db: Session,
-    response: Response,
     csrf_token: str | None,
     session_token: str | None
 ) -> int:
