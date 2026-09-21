@@ -8,7 +8,7 @@ from app.services.auth_service import obter_session_cookie, obter_csrf_token
 
 from app.schemas.medicamento_schema import Medicamento_Create
 
-from app.services.medicamento_service import service_criar_medicamento
+from app.services.medicamento_service import service_criar_medicamento, service_deletar_medicamento
 
 medicamento_router = APIRouter(
     prefix="/medicamento",
@@ -18,9 +18,17 @@ medicamento_router = APIRouter(
 @medicamento_router.post("/", status_code=status.HTTP_200_OK)
 async def criar_medicamento(
     medicamento_create: Medicamento_Create,
-    response: Response,
     csrf_token: str | None = Depends(obter_csrf_token),
     session_cookie = Depends(obter_session_cookie),
     db: Session = Depends(get_db)
 ):
-    return service_criar_medicamento(db, response, medicamento_create, csrf_token, session_cookie)
+    return service_criar_medicamento(db, medicamento_create, csrf_token, session_cookie)
+
+@medicamento_router.delete("/{medicamento_id}", status_code=status.HTTP_200_OK)
+async def deletar_medicamento(
+    medicamento_id: int,
+    csrf_token: str | None = Depends(obter_csrf_token),
+    session_cookie = Depends(obter_session_cookie),
+    db: Session = Depends(get_db)
+):
+    return service_deletar_medicamento(db, medicamento_id, csrf_token, session_cookie)

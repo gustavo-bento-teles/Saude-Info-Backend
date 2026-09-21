@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 
-from fastapi import HTTPException, status, Response
+from fastapi import HTTPException, status
 
 from app.repositories.unidade_saude_repository import db_criar_unidade_saude, db_buscar_unidade_saude_nome_login, db_listar_unidades_saude, db_buscar_unidade_saude_by_id, db_atualizar_dados_unidade_saude_by_id
 
