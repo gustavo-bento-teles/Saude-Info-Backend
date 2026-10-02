@@ -51,6 +51,6 @@ class UnidadeSaude_Detailed_Response(BaseModel):
     
 
 class UnidadeSaude_Update(BaseModel):
-    aberto: bool | None
-    pessoas_fila_atendimento: int | None
-    pessoas_atendidas: int | None
+    aberto: bool | None = None
+    pessoas_fila_atendimento: int | None = None
+    pessoas_atendidas: int | None = None

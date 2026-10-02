@@ -25,7 +25,7 @@ def service_criar_medicamento(
     db_criar_relacao_falta_medicamento_unidade_saude(db, unidade_saude_id, medicamento.id)
     
     return {
-        "message": "Medicamento criado com sucesso"
+        "detail": "Medicamento criado com sucesso"
     }
     
 def service_deletar_medicamento(
@@ -52,3 +52,7 @@ def service_deletar_medicamento(
         
     db_delete_relacao_falta_medicamento_unidade_saude(db, unidade_saude_id, medicamento_id)
     db_deletar_medicamento_banco(db, medicamento_id)
+    
+    return {
+            "detail": "Medicamento deletado com sucesso"
+        }

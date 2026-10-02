@@ -14,7 +14,7 @@ from app.main import SessaoInvalidaException
 
 from datetime import datetime, timezone
 
-from app.core import ADMIN_PASSWORD, SESSION_DURATION
+from app.core import ADMIN_PASSWORD
 
 security = HTTPBearer()
 
@@ -75,7 +75,7 @@ def service_delete_current_unidade_saude(
     response.delete_cookie("csrf_token", path="/")
         
     return {
-        "message": "Logout realizado com sucesso"
+        "detail": "Logout realizado com sucesso"
     }
 
 
@@ -157,5 +157,5 @@ def service_fazer_login(
     )
     
     return {
-        "message": "Login realizado com sucesso"
+        "detail": "Login realizado com sucesso"
     }

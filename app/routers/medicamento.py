@@ -1,4 +1,4 @@
-from fastapi import APIRouter, status, Depends, Response
+from fastapi import APIRouter, status, Depends
 
 from sqlalchemy.orm import Session
 
@@ -28,7 +28,7 @@ async def criar_medicamento(
 async def deletar_medicamento(
     medicamento_id: int,
     csrf_token: str | None = Depends(obter_csrf_token),
-    session_cookie = Depends(obter_session_cookie),
+    session_cookie: str | None = Depends(obter_session_cookie),
     db: Session = Depends(get_db)
 ):
     return service_deletar_medicamento(db, medicamento_id, csrf_token, session_cookie)

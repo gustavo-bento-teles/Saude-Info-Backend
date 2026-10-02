@@ -23,7 +23,7 @@ def db_obter_relacao_falta_medicamento_unidade_saude(
     db: Session,
     unidade_saude_id: int,
     medicamento_id: int
-):
+) -> Falta_Medicamento_Unidade_Saude | None:
     falta_medicamento_unidade_saude = db.execute(
         select(Falta_Medicamento_Unidade_Saude)
             .where(
@@ -35,7 +35,11 @@ def db_obter_relacao_falta_medicamento_unidade_saude(
     return falta_medicamento_unidade_saude
 
 
-def db_delete_relacao_falta_medicamento_unidade_saude(db: Session, unidade_saude_id: int, medicamento_id: int):
+def db_delete_relacao_falta_medicamento_unidade_saude(
+    db: Session,
+    unidade_saude_id: int,
+    medicamento_id: int
+):
     falta_medicamento_unidade_saude = db_obter_relacao_falta_medicamento_unidade_saude(db, unidade_saude_id, medicamento_id)
     
     if falta_medicamento_unidade_saude is None:
