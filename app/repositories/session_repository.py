@@ -32,15 +32,16 @@ def db_buscar_sessao_banco(
     session_token_hash: str,
     csrf_token_hash: str
 ) -> TableSession | None:
+    
     sessao = db.execute(
         select(TableSession)
-            .where(
-                TableSession.token_hash == session_token_hash,
-                TableSession.csrf_token == csrf_token_hash
-            )
+        .where(
+            TableSession.token_hash == session_token_hash,
+            TableSession.csrf_token == csrf_token_hash
+        )
     ).scalar_one_or_none()
-    
-    return sessao if sessao is not None else None
+
+    return sessao
 
 
 def db_deletar_sessao_banco(
@@ -48,12 +49,8 @@ def db_deletar_sessao_banco(
     session_token_hash: str,
     csrf_token_hashed: str
 ):
-    db.execute(
-        delete(TableSession)
-            .where(
-                TableSession.token_hash == session_token_hash,
-                TableSession.csrf_token == csrf_token_hashed
-            )
-    )
-    
+    sessao = db_buscar_sessao_banco(db, session_token_hash, csrf_token_hashed)
+
+    db.delete(sessao)
+    db.flush()
     db.commit()

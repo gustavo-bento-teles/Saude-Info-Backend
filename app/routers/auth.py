@@ -6,12 +6,24 @@ from app.database.database import get_db
 
 from app.schemas.unidade_saude_schema import UnidadeSaude_Login
 
-from app.services.auth_service import service_fazer_login, service_delete_current_unidade_saude, obter_session_cookie, obter_csrf_token
+from app.services.auth_service import service_fazer_login, service_delete_current_unidade_saude, obter_session_cookie, obter_csrf_token, service_get_current_unidade_saude
 
 auth_router = APIRouter(
     prefix="/auth",
     tags=["Auth"]
 )
+
+@auth_router.get("/me", status_code=status.HTTP_200_OK)
+async def identificar_si_mesmo(
+    db: Session = Depends(get_db),
+    csrf_token: str | None = Depends(obter_csrf_token),
+    session_cookie = Depends(obter_session_cookie)
+):  
+    unidade_saude_id: int = service_get_current_unidade_saude(db, csrf_token, session_cookie)
+    
+    return {
+        "id": unidade_saude_id
+    }
 
 @auth_router.post("/login", status_code=status.HTTP_200_OK)
 async def fazer_login(
