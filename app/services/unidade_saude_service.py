@@ -82,7 +82,7 @@ def service_atualizar_dados_unidade_saude(
     if not db_atualizar_dados_unidade_saude_by_id(db, unidade_saude_id, unidade_dados):
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="Usuário não encontrado"
+            detail="Unidade de Saude não encontrada"
         )
     
     return {

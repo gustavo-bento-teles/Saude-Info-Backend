@@ -43,3 +43,22 @@ def db_delete_relacao_unidade_saude_medico(
     
     db.delete(unidade_saude_medico)
     db.commit()
+    
+
+def db_atualizar_status_medico_relacao_unidade_saude_medico_by_id(
+    db: Session,
+    unidade_saude_id: int,
+    medico_id: int,
+    status_medico: bool
+) -> bool:
+    relacao_unidade_saude_medico = db_obter_relacao_unidade_saude_medico(db, unidade_saude_id, medico_id)
+    
+    if relacao_unidade_saude_medico is None:
+        return False
+    
+    relacao_unidade_saude_medico.status_medico_unidade_saude = status_medico
+    
+    db.flush()
+    db.commit()
+    
+    return True
