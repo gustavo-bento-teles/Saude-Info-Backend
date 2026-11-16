@@ -23,9 +23,9 @@ async def criar_medico(
 ):
     return service_criar_medico(db, medico_create, csrf_token, session_cookie)
 
-@medico_router.patch("/", status_code=status.HTTP_200_OK)
+@medico_router.patch("/{medico_id}", status_code=status.HTTP_200_OK)
 async def atualizar_status_medico(
-    medico_id: int = Body(..., embed=True),
+    medico_id: int,
     status_medico: bool = Body(..., embed=True),
     csrf_token: str | None = Depends(obter_csrf_token),
     session_cookie: str | None = Depends(obter_session_cookie),
